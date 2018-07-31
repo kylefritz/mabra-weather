@@ -1,6 +1,6 @@
 # MABRA Weather
 
-Displays the Mid-Atlantic cyclocross schedule and daily and hourly weather conditions up to and on race days in text and visualized. Links to BikeReg, Google Maps, Waze, and CrossResults provided for each race. Past events grayed out.
+Displays the Mid-Atlantic cyclocross schedule with daily and hourly weather conditions up to and on race days via text and visuals. Links to BikeReg, Google Maps, Waze, and CrossResults provided for each race. Past events grayed out. Visualizations have mouse over text display.
 
 Built using React and React Vis
 
