@@ -50,21 +50,19 @@ body {
   background-color  : #000000           ; 
 }
 
-.event      { padding : 6px 5px 0px  10px ; flex  : 0 0 150px  ;  }
+.event      { padding : 6px 5px 0px  10px  ; flex  : 0 0 150px  ;  }
 .preLabels  { padding : 6px 0px  0px  10px ; flex  : 0 0 110px  ;  }
 .preDays    { padding : 6px 10px 0px  0px  ; flex  : 0 0 140px  ;  }
 .raceDay    { padding : 6px 10px 0px  10px ; flex  : 0 0 240px  ;  }
 .hourly     { padding : 6px 5px  0px  5px  ; flex  : 0 0 50px   ;  }
-.footer     { padding : 6px 0px  10px 5px  ; width : 2420px     ;  } /* (170+4*195+25*60-80) */
+.footer     { padding : 6px 0px  15px 5px  ; width : 2420px     ;  }
 
 .summary  { position  : relative  ; height  : 90px      ;             }
 .bottom   { position  : absolute  ; bottom  : 0         ;             }
 .outer    { position  : relative  ; top     : 250       ; left  : 0 ; }
 .stack    { position  : absolute  ; top     : 0         ; left  : 0 ; }
 
-.right { float : right ; }
-
-.graphSpacer { height : 255px ; width : 1400px ;   z-index           : -1  ;}
+.right      { float   : right     ; }
 
 .highlight  { color   : #F07591 ; }
 .feel       { color   : #FF7420 ; }
@@ -81,6 +79,7 @@ a:active    { color   : #F07591 ; }
 
 .past       { opacity : 0.33      ; }
 
+.legend         { padding : 0px 0px 0px 5px}
 .displayTime    { display : inline-block  ; width : 50px  ; }
 .displayIcon    { display : inline-block  ; width : 40px  ; }
 .displayFeel    { display : inline-block  ; width : 80px  ; }
@@ -92,7 +91,6 @@ a:active    { color   : #F07591 ; }
 .displayRise    { display : inline-block  ; width : 125px ; }
 .displaySet     { display : inline-block  ; width : 125px ; }
 
-
-
+.graphSpacer    { height : 255px ; width : 1400px ; z-index : -1 ; }
 
 

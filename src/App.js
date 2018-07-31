@@ -64,6 +64,22 @@ export const hours  =   [
                         {   label:  "11p" ,   }   ,
                         ]
 
+export const   emojiKey    =   {   
+                        "clear-day"             :   "☀️"     ,   
+                        "clear-night"           :   "☀️"     ,   
+                        "rain"                  :   "💧"    ,  
+                        "snow"                  :   "❄️"     ,   
+                        "sleet"                 :   "❄️"     ,   
+                        "hail"                  :   "❄️"     ,   
+                        "wind"                  :   "🚩"    ,  
+                        "fog"                   :   "🌫"    ,  
+                        "cloudy"                :   "☁️"     ,   
+                        "partly-cloudy-day"     :   "🌤"    ,  
+                        "partly-cloudy-night"   :   "🌤"    ,  
+                        "thunderstorm"          :   "⚡"     ,   
+                        "tornado"               :   "🌪"    ,  
+                        "other"                 :   "❗"     ,   
+                        };
 
 class App extends Component {
     render() {

@@ -1,13 +1,12 @@
-import React, { Component } from 'react'        ;
-import {getAllWeather}      from './api'        ;
-import {hours}              from './App'        ;
-import breg                 from './breg16.png' ;
-import goog                 from './goog16.png' ;
-import waze                 from './waze16.png' ;
-import rslt                 from './rslt16.png' ;
-
-import './vis.css' ;
-import {XYPlot, VerticalBarSeries, LineSeries, HorizontalBarSeries} from 'react-vis' ;
+import React, { Component }             from 'react'            ;
+import {getAllWeather}                  from './api'            ;
+import {PreLabels, PreDaily, RaceDaily} from './daily'           ;
+import {HourlyText}                     from './hourlyText'     ;
+import {HourlyGraph}                    from './hourlyGraph'    ;
+import breg                             from './breg16.png'     ;
+import goog                             from './goog16.png'     ;
+import waze                             from './waze16.png'     ;
+import rslt                             from './rslt16.png'     ;
 
 const   predays     =   [ 
                         { label: "-3 Days"  , index: 0  ,  } ,
@@ -24,23 +23,6 @@ const   weekdays    =   [
                         "Friday"    ,
                         "Saturday"  , 
                         ];
-
-const   emojiKey    =   {   
-                        "clear-day"             :   "☀️"     ,   
-                        "clear-night"           :   "☀️"     ,   
-                        "rain"                  :   "💧"    ,  
-                        "snow"                  :   "❄️"     ,   
-                        "sleet"                 :   "❄️"     ,   
-                        "hail"                  :   "❄️"     ,   
-                        "wind"                  :   "🚩"    ,  
-                        "fog"                   :   "🌫"    ,  
-                        "cloudy"                :   "☁️"     ,   
-                        "partly-cloudy-day"     :   "🌤"    ,  
-                        "partly-cloudy-night"   :   "🌤"    ,  
-                        "thunderstorm"          :   "⚡"     ,   
-                        "tornado"               :   "🌪"    ,  
-                        "other"                 :   "❗"     ,   
-                        };
 
 export class Row extends Component {
 
@@ -88,9 +70,42 @@ export class Row extends Component {
 
         else {
 
-            const today     =   new Date(Date.now() - 1 * 86400000)                                         ;
+            const today     =   new Date(Date.now())
             const raceDay   =   Date.parse( new Date ( this.state.weather[3].daily.data[0].time * 1000 ) )  ;
-            const opacity   =   ( today > raceDay ) ? "past" : ""                                           ;
+            const opacity   =   ( ( today - raceDay ) > ( 1 * 86400000 ) ) ? "past" : ""                                           ;
+
+            const diffDays  =   Math.ceil( ( raceDay - today ) / 86400000 )
+            const toGo      =   ( diffDays < -729 )
+                                    ? Math.floor( diffDays / -365 ) + " years ago"  
+                                    : ( diffDays < -364 )
+                                        ? "1 year ago" 
+                                        : ( diffDays < -60 )
+                                            ? Math.floor( diffDays / -30.4 ) + " months ago" 
+                                            : ( diffDays < -34)
+                                                ? "1 month ago" 
+                                                : ( diffDays < -13 )
+                                                    ? Math.floor( diffDays / -7 ) + " weeks ago" 
+                                                    : ( diffDays < -6 )
+                                                        ? "1 week ago" 
+                                                        : ( diffDays < -1 )
+                                                            ? diffDays * -1 + " days ago" 
+                                                            : ( diffDays === -1 )
+                                                                ? "Yesterday" 
+                                                                : ( diffDays === 0 )
+                                                                    ? "Today!" 
+                                                                    : ( diffDays === 1 )
+                                                                        ? "Tomorrow!" 
+                                                                        : ( diffDays < 15 )
+                                                                            ? diffDays + " days" 
+                                                                            : ( diffDays < 203 )
+                                                                                ? Math.floor( diffDays / 7 ) + " weeks" 
+                                                                                : ( diffDays < 365 )
+                                                                                    ? Math.floor( diffDays / 30.4 ) + " months" 
+                                                                                    : (diffDays < 729 )
+                                                                                        ? "1 year" 
+                                                                                        : Math.floor( diffDays / 365 ) + " years" 
+
+            console.log(diffDays)
 
             return (
                 <div className={"flexBin " + opacity}> 
@@ -99,6 +114,7 @@ export class Row extends Component {
                         weather =   {this.state.weather} 
                         lat     =   {this.props.lat}
                         long    =   {this.props.long}
+                        toGo    =   {toGo}
                     />
                     <PreLabels />
                     { predays.map( (day, i) =>
@@ -155,361 +171,10 @@ class Event extends Component {
                 <a href={bregUrl}><img src={breg} /></a>&nbsp;
                 <a href={googUrl}><img src={goog} /></a>&nbsp;
                 <a href={wazeUrl}><img src={waze} /></a>&nbsp;
-                <a href={rsltUrl}><img src={rslt} /></a>        
+                <a href={rsltUrl}><img src={rslt} /></a><br />
+                <br />
+                {this.props.toGo}      
             </div>
         );
     }
 }
-
-class PreLabels extends Component {
-    render() {
-        return (
-            <div className="preLabels">
-                <div className="summary">
-                    {/* spacer */}
-                </div>
-                <br />
-                Temp<br />
-                Wind<br />
-                Cloud Cover<br />
-                Precip Change<br />
-                Precip Amount<br />
-            </div>
-        );
-    }
-}
-
-class PreDaily extends Component {
-
-    render() {
-
-        const daily         =   this.props.weather[this.props.index].daily.data[0]  ;
-
-        const icon          =   emojiKey[daily.icon]                                ;
-        const summary       =   daily.summary                                       ;
-        const tempLowFixed  =   daily.temperatureLow.toFixed(0)                     ;
-        const tempHighFixed =   daily.temperatureHigh.toFixed(0)                    ;
-        const windFixed     =   daily.windSpeed.toFixed(0)                          ;
-        const cloudFixed    =   ( daily.cloudCover        * 100 ).toFixed(0)        ;
-        const chanceFixed   =   ( daily.precipProbability * 100 ).toFixed(0)        ;
-        const precipFixed   =   ( daily.precipIntensity   * 24  ).toFixed(2)        ;
-        
-        return (
-            <div className="preDays">
-                <div className="summary">
-                {icon} {summary}
-                </div>
-                <br />
-                <span className="right">{tempLowFixed}° - {tempHighFixed}°  </span><br />
-                <span className="right">{windFixed}mph                      </span><br />
-                <span className="right">{cloudFixed}%                       </span><br />
-                <span className="right">{chanceFixed}%                      </span><br />
-                <span className="right">{precipFixed}in                      </span><br />
-            </div>
-        )
-    }
-}
-
-class RaceDaily extends Component {
-
-    render() {
-
-        const daily             =   this.props.weather[3].daily.data[0]                         ;
-
-        const icon              =   emojiKey[daily.icon]                                        ;
-        const summary           =   daily.summary                                               ;
-        const tempLowFixed      =   daily.temperatureLow.toFixed(0)                             ;
-        const tempHighFixed     =   daily.temperatureHigh.toFixed(0)                            ;
-        const feelLowFixed      =   daily.apparentTemperatureLow.toFixed(0)                     ;
-        const feelHighFixed     =   daily.apparentTemperatureHigh.toFixed(0)                    ;
-        const windFixed         =   daily.windSpeed.toFixed(0)                                  ;
-        const cloudFixed        =   ( daily.cloudCover        * 100 ).toFixed(0)                ;
-        const chanceFixed       =   ( daily.precipProbability * 100 ).toFixed(0)                ;
-        const precipFixed       =   ( daily.precipIntensity   * 24  ).toFixed(2)                ;
-        const sunriseHour       =   ( new Date ( daily.sunriseTime * 1000 ) ).getHours()        ;
-        const sunriseMin        =   ( new Date ( daily.sunriseTime * 1000 ) ).getMinutes()      ;
-        const sunriseMinFixed   =   sunriseMin < 10 ? "0" + sunriseMin : sunriseMin             ;
-        const sunsetHour        =   ( new Date ( daily.sunsetTime  * 1000 ) ).getHours() - 12   ;
-        const sunsetMin         =   ( new Date ( daily.sunsetTime  * 1000 ) ).getMinutes()      ;
-        const sunsetMinFixed    =   sunsetMin  < 10 ? "0" + sunsetMin  : sunsetMin              ;
-                        
-        return (
-            <div className="raceDay highlight">
-                <div className="summary">
-                    {icon} {summary}
-                </div>
-                Feel            <span className="right">{feelLowFixed}° - {feelHighFixed}°                                  </span><br />
-                Temp            <span className="right">{tempLowFixed}° - {tempHighFixed}°                                  </span><br />
-                Wind            <span className="right">{windFixed}mph                                                      </span><br />
-                Cloud Cover     <span className="right">{cloudFixed}%                                                       </span><br />
-                Precip Chance   <span className="right">{chanceFixed}%                                                      </span><br />
-                Precip Amount   <span className="right">{precipFixed}in                                                      </span><br />
-                Sunrise Sunset  <span className="right">{sunriseHour}:{sunriseMinFixed}a - {sunsetHour}:{sunsetMinFixed}p   </span><br />
-                <br />
-            </div>
-        )
-    }
-}
-
-class HourlyText extends Component {
-
-    render() {
-        
-        const hourly = this.props.weather[3].hourly.data
-
-        return (
-            <React.Fragment>
-                { hours.map( (hour, i) =>
-                    <HourText  
-                        key     = { i }
-                        {...hour}
-                        weather = {hourly[i]}
-                        fullDay = {this.props.weather[3]}
-                        num     = { i }
-                    />
-                ) }
-            </React.Fragment>
-        )
-    }
-}
-
-class HourText extends Component {
-
-    render() {
-        
-        const hour          =   this.props.weather                              ;
-        const icon          =   emojiKey[hour.icon]                             ;
-        const feelFixed     =   hour.apparentTemperature.toFixed(0)             ;
-        const tempFixed     =   hour.temperature.toFixed(0)                     ;
-        const windFixed     =   hour.windSpeed.toFixed(0)                       ;
-        const cloudFixed    =   ( hour.cloudCover        * 100  ).toFixed(0)    ;
-        const chanceFixed   =   ( hour.precipProbability * 100  ).toFixed(0)    ;
-        const precipMmFixed =   ( hour.precipIntensity   * 25.4 ).toFixed(1)    ;
-           
-        const sunriseHour   =   ( new Date ( this.props.fullDay.daily.data[0].sunriseTime * 1000 ) ).getHours()   ;
-        const sunsetHour    =   ( new Date ( this.props.fullDay.daily.data[0].sunsetTime  * 1000 ) ).getHours()   ;
-        const sunsetHourFixed        =   ( new Date ( this.props.fullDay.daily.data[0].sunsetTime  * 1000 ) ).getHours() - 12   ;
-
-
-        const sunriseMin        =   ( new Date ( this.props.fullDay.daily.data[0].sunriseTime * 1000 ) ).getMinutes()      ;
-        const sunriseMinFixed   =   sunriseMin < 10 ? "0" + sunriseMin : sunriseMin             ;
-        const sunsetMin         =   ( new Date ( this.props.fullDay.daily.data[0].sunsetTime  * 1000 ) ).getMinutes()      ;
-        const sunsetMinFixed    =   sunsetMin  < 10 ? "0" + sunsetMin  : sunsetMin              ;
-
-        const sunIcon       =   (this.props.num === sunriseHour) 
-                                    ? (sunriseHour+":"+sunriseMinFixed+"a")
-                                    :   (this.props.num === sunsetHour)
-                                        ? (sunsetHourFixed+":"+sunsetMinFixed+"p")
-                                        : "";
-
-        return (
-
-            <div>
-                <div className="hourly">
-                    <div className="summary">
-                        <div className="bottom">
-                            {icon}
-                        </div>
-                    </div>
-                    <span className="feel">{feelFixed}°</span><br />
-                    <span className="temp">{tempFixed}°</span><br />
-                    <span className="wind">{windFixed}mph</span><br />
-                    <span className="cloud">{cloudFixed}%</span><br />
-                    <span className="chance">{chanceFixed}%</span><br />
-                    <span className="amount">{precipMmFixed}mm</span><br />
-                    <span className="sun">{sunIcon}</span><br />
-                </div>
-            </div>
-        )
-    }
-}
-
-class HourlyGraph extends Component {
-    
-    constructor(props) {
-        super(props);
-        this.state = {
-            displayTime: [],
-            displayIcon: [],
-            displayFeel: [],
-            displayTemp: [],
-            displayWind: [],
-            displayCloud:[],
-            displayChance:[],
-            displayAmount:[],
-            displayRise:[],
-            displaySet:[],
-        };
-        this.nearestXHandler    = this.nearestXHandler.bind(this)   ;
-    }
-
-    nearestXHandler(value, {index}) {
-
-        let time = index === 0 ? 
-            "12a" :
-            index < 13 ?
-                index + "a"          :
-                ( index - 12 ) + "p" ;
-
-        const day = this.props.weather[3]
-
-        let icon    =                    emojiKey[day.hourly.data[index].icon]                                                  ;
-        let feel    =   "Feel "             +     day.hourly.data[index].apparentTemperature.toFixed(0)               +   "°"   ;
-        let temp    =   "Temp "             +     day.hourly.data[index].temperature.toFixed(0)                       +   "°"   ;
-        let wind    =   "Wind "             +     day.hourly.data[index].windSpeed.toFixed(0)                         +   "mph" ;
-        let cloud   =   "Cloud Cover "      +   ( day.hourly.data[index].cloudCover           * 100   ).toFixed(0)    +   "%"   ;  
-        let chance  =   "Precip Chance "    +   ( day.hourly.data[index].precipProbability    * 100   ).toFixed(0)    +   "%"   ;
-        let amount  =   "Precip Amount "    +   ( day.hourly.data[index].precipIntensity      * 25.4  ).toFixed(1)    +   "mm"  ;
-        const sunriseHour       =    ( new Date ( day.daily.data[0].sunriseTime * 1000 ) ).getHours()                           ;
-        const sunsetHourFixed   =    ( new Date ( day.daily.data[0].sunsetTime  * 1000 ) ).getHours() - 12                      ;
-        const sunriseMin        =    ( new Date ( day.daily.data[0].sunriseTime * 1000 ) ).getMinutes()                         ;
-        const sunsetMin         =    ( new Date ( day.daily.data[0].sunsetTime  * 1000 ) ).getMinutes()                         ;
-        const sunriseMinFixed   =    sunriseMin < 10 ? "0" + sunriseMin : sunriseMin                                            ;
-        const sunsetMinFixed    =    sunsetMin  < 10 ? "0" + sunsetMin  : sunsetMin                                             ;
-        let rise = "Sunrise " + sunriseHour     + ":" + sunriseMinFixed + "a"                                                   ;
-        let set  = "Sunset "  + sunsetHourFixed + ":" + sunsetMinFixed  + "p"                                                   ;
-
-        this.setState({ 
-            displayIcon     : [icon]    ,
-            displayTime     : [time]    ,
-            displayFeel     : [feel]    ,
-            displayTemp     : [temp]    ,
-            displayWind     : [wind]    ,
-            displayCloud    : [cloud]   ,
-            displayChance   : [chance]  ,
-            displayAmount   : [amount]  ,
-            displayRise     : [rise]    ,
-            displaySet      : [set]     ,
-        });
-
-    }
-
-    render() {
-
-            const hourly = this.props.weather[3].hourly.data
-
-            let feelData =[]
-            { hours.map( (hour, i) =>
-                feelData.push( {x: i, y: hourly[i].apparentTemperature.toFixed(0) } )
-            ) }
-
-            let tempData =[]
-            { hours.map( (hour, i) =>
-                tempData.push( {x: i, y: hourly[i].temperature.toFixed(0) } )
-            ) }
-
-            let windData =[]
-            { hours.map( (hour, i) =>
-                windData.push( {x: i, y: hourly[i].windSpeed.toFixed(0) } )
-            ) }
-
-            let cloudData =[]
-            { hours.map( (hour, i) =>
-                cloudData.push( {x: i, y: ( hourly[i].cloudCover * 100  ).toFixed(0) } )
-            ) }
-
-            let chanceData =[]
-            { hours.map( (hour, i) =>
-                chanceData.push( {x: i, y: ( hourly[i].precipProbability * 100  ).toFixed(0) } )
-            ) }
-
-            let precipMmData =[]
-            { hours.map( (hour, i) =>
-                precipMmData.push( {x: i, y: ( hourly[i].precipIntensity * 25.4  ).toFixed(1) } )
-            ) }
-
-            let tempBottom    =   Math.min.apply(Math, tempData.map(function(z) { return z.y; })) - 5   ;
-            let tempTop       =   Math.max.apply(Math, tempData.map(function(z) { return z.y; })) + 5   ;
-
-            const sunriseHour   =   ( new Date ( this.props.weather[3].daily.data[0].sunriseTime * 1000 ) ).getHours()      ;
-            const sunsetHour    =   ( new Date ( this.props.weather[3].daily.data[0].sunsetTime  * 1000 ) ).getHours()      ;    
-            const sunriseMin    =   ( new Date ( this.props.weather[3].daily.data[0].sunriseTime * 1000 ) ).getMinutes()    ;
-            const sunsetMin     =   ( new Date ( this.props.weather[3].daily.data[0].sunsetTime  * 1000 ) ).getMinutes()    ;
-
-            const risePer       =   ( 60 * sunriseHour + sunriseMin ) / ( 60 * 24 ) ;
-            const setPer        =   ( 60 * sunsetHour  + sunsetMin  ) / ( 60 * 24 ) ;
-
-            const sunChangetime =   0.2 / 24    ;
-
-            const preRisePer    =   risePer - sunChangetime     ;
-            const postRisePer   =   risePer + sunChangetime     ;
-            const preSetPer     =   setPer - sunChangetime      ;
-            const postSetPer    =   setPer + sunChangetime      ;
-
-            const postRiseNet   =   postRisePer -   preRisePer  ;
-            const preSetNet     =   preSetPer   -   postRisePer ;
-            const postSetNet    =   postSetPer  -   preSetPer   ;
-            const remainderNet  =   1           -   postSetPer  ;
-
-        return (
-
-            <div>
-                <div className="outer">
-                <div className="graphSpacer">
-                        {/* spacer */}
-                    </div>
-                    <div className="stack">
-                        <XYPlot height={250} width= {1440} margin={{left: 0, right: 0, top: 5, bottom: 1}}>
-                            <LineSeries         data={ [ { x:0   ,   y: 0 } ] } color="#000000" />
-                            <LineSeries         data={ [ { x:0   ,   y: 1 } ] } color="#000000" />
-                            <VerticalBarSeries  data={precipMmData}             color="#B4DFE4" />
-                        </XYPlot>
-                    </div>
-
-                    <div className="stack">
-                        <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}>
-                            <LineSeries data={ [ { x:0   ,   y: 0  } ] }    color="#000000" />
-                            <LineSeries data={ [ { x:0   ,   y: 20 } ] }    color="#000000" />
-                            <LineSeries data={windData}                     color="#AA4A92" />
-                        </XYPlot>
-                    </div>
-
-                    <div className="stack">
-                        <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}>
-                            <LineSeries data={ [ { x:0   ,   y: 0   } ] }   color="#000000" />
-                            <LineSeries data={ [ { x:0   ,   y: 100 } ] }   color="#000000" />
-                            <LineSeries data={cloudData}                    color="#C0C5C4" />
-                            <LineSeries data={chanceData}                   color="#3358b5" />
-                        </XYPlot>
-                    </div>
-
-                    <div className="stack">
-                        <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}
-                            onMouseLeave={this.mouseLeaveHandler}
-                        >
-                            <LineSeries data={ [ { x:0   ,   y: tempBottom } ] }    color="#000000" />
-                            <LineSeries data={ [ { x:0   ,   y: tempTop    } ] }    color="#000000" />
-                            <LineSeries data={feelData}                             color="#FF7420" />
-                            <LineSeries data={tempData}                             color="#F71A2B"
-                                onNearestX={this.nearestXHandler}
-                            />
-                        </XYPlot>
-                    </div>
-                </div>
-                <div>
-                    <XYPlot height={25} width= {1440} margin={{left: 5, right: 5, top: 1, bottom: 1}} stackBy="x">
-                        <HorizontalBarSeries data={ [ { x: preRisePer   ,   y: 1 } ] } color="#1D1D5B" />
-                        <HorizontalBarSeries data={ [ { x: postRiseNet  ,   y: 1 } ] } color="#fe9b78" />
-                        <HorizontalBarSeries data={ [ { x: preSetNet    ,   y: 1 } ] } color="#BAD9E7" />
-                        <HorizontalBarSeries data={ [ { x: postSetNet   ,   y: 1 } ] } color="#fe9b78" />
-                        <HorizontalBarSeries data={ [ { x: remainderNet ,   y: 1 } ] } color="#1D1D5B" />
-                    </XYPlot> 
-                </div>
-                <div>
-                    <span className="displayTime">{this.state.displayTime}</span>
-                    <span className="displayIcon">{this.state.displayIcon}</span>
-                    <span className="displayFeel feel">{this.state.displayFeel}</span>
-                    <span className="displayTemp temp">{this.state.displayTemp}</span>
-                    <span className="displayWind wind">{this.state.displayWind}</span>
-                    <span className="displayCloud cloud">{this.state.displayCloud}</span>
-                    <span className="displayChance chance">{this.state.displayChance}</span>
-                    <span className="displayAmount amount">{this.state.displayAmount}</span>
-                    <span className="displayRise sun">{this.state.displayRise}</span>
-                    <span className="displaySet sun">{this.state.displaySet}</span>
-                </div>
-            </div>
-        );
-    }
-}
-
-

@@ -27,8 +27,12 @@ export class Header extends Component {
                     Race Day
                 </div>
                 { hours.map( (hour, i) =>
-                    <div className="hourly fillHeadColor">
+                    <div 
+                        className   = "hourly fillHeadColor" 
+                        key         = { i }
+                    >
                         {hour.label}
+                        
                     </div>
                 ) }
             </div>
