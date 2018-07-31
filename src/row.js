@@ -7,7 +7,7 @@ import waze                 from './waze16.png' ;
 import rslt                 from './rslt16.png' ;
 
 import './vis.css' ;
-import {XYPlot, VerticalBarSeries, LineSeries, HorizontalBarSeries, Crosshair} from 'react-vis' ;
+import {XYPlot, VerticalBarSeries, LineSeries, HorizontalBarSeries} from 'react-vis' ;
 
 const   predays     =   [ 
                         { label: "-3 Days"  , index: 0  ,  } ,
@@ -26,15 +26,15 @@ const   weekdays    =   [
                         ];
 
 const   emojiKey    =   {   
-                        "clear-day"             :   "☀"     ,   
-                        "clear-night"           :   "☀"     ,   
+                        "clear-day"             :   "☀️"     ,   
+                        "clear-night"           :   "☀️"     ,   
                         "rain"                  :   "💧"    ,  
-                        "snow"                  :   "❄"     ,   
-                        "sleet"                 :   "❄"     ,   
-                        "hail"                  :   "❄"     ,   
+                        "snow"                  :   "❄️"     ,   
+                        "sleet"                 :   "❄️"     ,   
+                        "hail"                  :   "❄️"     ,   
                         "wind"                  :   "🚩"    ,  
                         "fog"                   :   "🌫"    ,  
-                        "cloudy"                :   "☁"     ,   
+                        "cloudy"                :   "☁️"     ,   
                         "partly-cloudy-day"     :   "🌤"    ,  
                         "partly-cloudy-night"   :   "🌤"    ,  
                         "thunderstorm"          :   "⚡"     ,   
@@ -326,6 +326,64 @@ class HourText extends Component {
 
 class HourlyGraph extends Component {
     
+    constructor(props) {
+        super(props);
+        this.state = {
+            displayTime: [],
+            displayIcon: [],
+            displayFeel: [],
+            displayTemp: [],
+            displayWind: [],
+            displayCloud:[],
+            displayChance:[],
+            displayAmount:[],
+            displayRise:[],
+            displaySet:[],
+        };
+        this.nearestXHandler    = this.nearestXHandler.bind(this)   ;
+    }
+
+    nearestXHandler(value, {index}) {
+
+        let time = index === 0 ? 
+            "12a" :
+            index < 13 ?
+                index + "a"          :
+                ( index - 12 ) + "p" ;
+
+        const day = this.props.weather[3]
+
+        let icon    =                    emojiKey[day.hourly.data[index].icon]                                                  ;
+        let feel    =   "Feel "             +     day.hourly.data[index].apparentTemperature.toFixed(0)               +   "°"   ;
+        let temp    =   "Temp "             +     day.hourly.data[index].temperature.toFixed(0)                       +   "°"   ;
+        let wind    =   "Wind "             +     day.hourly.data[index].windSpeed.toFixed(0)                         +   "mph" ;
+        let cloud   =   "Cloud Cover "      +   ( day.hourly.data[index].cloudCover           * 100   ).toFixed(0)    +   "%"   ;  
+        let chance  =   "Precip Chance "    +   ( day.hourly.data[index].precipProbability    * 100   ).toFixed(0)    +   "%"   ;
+        let amount  =   "Precip Amount "    +   ( day.hourly.data[index].precipIntensity      * 25.4  ).toFixed(1)    +   "mm"  ;
+        const sunriseHour       =    ( new Date ( day.daily.data[0].sunriseTime * 1000 ) ).getHours()                           ;
+        const sunsetHourFixed   =    ( new Date ( day.daily.data[0].sunsetTime  * 1000 ) ).getHours() - 12                      ;
+        const sunriseMin        =    ( new Date ( day.daily.data[0].sunriseTime * 1000 ) ).getMinutes()                         ;
+        const sunsetMin         =    ( new Date ( day.daily.data[0].sunsetTime  * 1000 ) ).getMinutes()                         ;
+        const sunriseMinFixed   =    sunriseMin < 10 ? "0" + sunriseMin : sunriseMin                                            ;
+        const sunsetMinFixed    =    sunsetMin  < 10 ? "0" + sunsetMin  : sunsetMin                                             ;
+        let rise = "Sunrise " + sunriseHour     + ":" + sunriseMinFixed + "a"                                                   ;
+        let set  = "Sunset "  + sunsetHourFixed + ":" + sunsetMinFixed  + "p"                                                   ;
+
+        this.setState({ 
+            displayIcon     : [icon]    ,
+            displayTime     : [time]    ,
+            displayFeel     : [feel]    ,
+            displayTemp     : [temp]    ,
+            displayWind     : [wind]    ,
+            displayCloud    : [cloud]   ,
+            displayChance   : [chance]  ,
+            displayAmount   : [amount]  ,
+            displayRise     : [rise]    ,
+            displaySet      : [set]     ,
+        });
+
+    }
+
     render() {
 
             const hourly = this.props.weather[3].hourly.data
@@ -392,39 +450,41 @@ class HourlyGraph extends Component {
                     </div>
                     <div className="stack">
                         <XYPlot height={250} width= {1440} margin={{left: 0, right: 0, top: 5, bottom: 1}}>
-                            <LineSeries data={ [ { x:0   ,   y: 0 } ] } color="#000000" />
-                            <LineSeries data={ [ { x:0   ,   y: 1 } ] } color="#000000" />
-                            <VerticalBarSeries data={precipMmData} color="#B4DFE4"/>
+                            <LineSeries         data={ [ { x:0   ,   y: 0 } ] } color="#000000" />
+                            <LineSeries         data={ [ { x:0   ,   y: 1 } ] } color="#000000" />
+                            <VerticalBarSeries  data={precipMmData}             color="#B4DFE4" />
                         </XYPlot>
                     </div>
 
                     <div className="stack">
                         <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}>
-                            <LineSeries data={ [ { x:0   ,   y: 0 } ] } color="#000000" />
-                            <LineSeries data={ [ { x:0   ,   y: 20 } ] } color="#000000" />
-                            <LineSeries data={windData} color="#AA4A92"/>
+                            <LineSeries data={ [ { x:0   ,   y: 0  } ] }    color="#000000" />
+                            <LineSeries data={ [ { x:0   ,   y: 20 } ] }    color="#000000" />
+                            <LineSeries data={windData}                     color="#AA4A92" />
                         </XYPlot>
                     </div>
 
                     <div className="stack">
                         <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}>
-                            <LineSeries data={ [ { x:0   ,   y: 0 } ] } color="#000000" />
-                            <LineSeries data={ [ { x:0   ,   y: 100 } ] } color="#000000" />
-
-                            <LineSeries data={cloudData} color="#C0C5C4"/>
-                            <LineSeries data={chanceData} color="#3358b5"/>
+                            <LineSeries data={ [ { x:0   ,   y: 0   } ] }   color="#000000" />
+                            <LineSeries data={ [ { x:0   ,   y: 100 } ] }   color="#000000" />
+                            <LineSeries data={cloudData}                    color="#C0C5C4" />
+                            <LineSeries data={chanceData}                   color="#3358b5" />
                         </XYPlot>
                     </div>
 
                     <div className="stack">
-                        <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}>
-                            <LineSeries data={ [ { x:0   ,   y: tempBottom } ] } color="#000000" />
-                            <LineSeries data={ [ { x:0   ,   y: tempTop } ] } color="#000000" />
-                            <LineSeries data={feelData} color="#FF7420"/>
-                            <LineSeries data={tempData} color="#F71A2B"/>
+                        <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}
+                            onMouseLeave={this.mouseLeaveHandler}
+                        >
+                            <LineSeries data={ [ { x:0   ,   y: tempBottom } ] }    color="#000000" />
+                            <LineSeries data={ [ { x:0   ,   y: tempTop    } ] }    color="#000000" />
+                            <LineSeries data={feelData}                             color="#FF7420" />
+                            <LineSeries data={tempData}                             color="#F71A2B"
+                                onNearestX={this.nearestXHandler}
+                            />
                         </XYPlot>
                     </div>
-
                 </div>
                 <div>
                     <XYPlot height={25} width= {1440} margin={{left: 5, right: 5, top: 1, bottom: 1}} stackBy="x">
@@ -435,7 +495,21 @@ class HourlyGraph extends Component {
                         <HorizontalBarSeries data={ [ { x: remainderNet ,   y: 1 } ] } color="#1D1D5B" />
                     </XYPlot> 
                 </div>
+                <div>
+                    <span className="displayTime">{this.state.displayTime}</span>
+                    <span className="displayIcon">{this.state.displayIcon}</span>
+                    <span className="displayFeel feel">{this.state.displayFeel}</span>
+                    <span className="displayTemp temp">{this.state.displayTemp}</span>
+                    <span className="displayWind wind">{this.state.displayWind}</span>
+                    <span className="displayCloud cloud">{this.state.displayCloud}</span>
+                    <span className="displayChance chance">{this.state.displayChance}</span>
+                    <span className="displayAmount amount">{this.state.displayAmount}</span>
+                    <span className="displayRise sun">{this.state.displayRise}</span>
+                    <span className="displaySet sun">{this.state.displaySet}</span>
+                </div>
             </div>
         );
     }
 }
+
+

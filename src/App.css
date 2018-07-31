@@ -81,6 +81,17 @@ a:active    { color   : #F07591 ; }
 
 .past       { opacity : 0.33      ; }
 
+.displayTime    { display : inline-block  ; width : 50px  ; }
+.displayIcon    { display : inline-block  ; width : 40px  ; }
+.displayFeel    { display : inline-block  ; width : 80px  ; }
+.displayTemp    { display : inline-block  ; width : 90px  ; }
+.displayWind    { display : inline-block  ; width : 110px ; }
+.displayCloud   { display : inline-block  ; width : 160px ; }
+.displayChance  { display : inline-block  ; width : 170px ; }
+.displayAmount  { display : inline-block  ; width : 190px ; }
+.displayRise    { display : inline-block  ; width : 125px ; }
+.displaySet     { display : inline-block  ; width : 125px ; }
+
 
 
 
