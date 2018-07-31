@@ -63,7 +63,7 @@ export class Row extends Component {
         if ( this.state.loading ) {
             return (
                 <div className="event sideBar">
-                    🚀omw from outer space brb
+                    <span role="img" aria-label="rocket">🚀</span> omw from outer space brb
                 </div>
             )
         }
@@ -152,10 +152,10 @@ class Event extends Component {
                 {month}/{date}<br />
                 {day}<br />
                 <br />
-                <a href={bregUrl}><img src={breg} /></a>&nbsp;
-                <a href={googUrl}><img src={goog} /></a>&nbsp;
-                <a href={wazeUrl}><img src={waze} /></a>&nbsp;
-                <a href={rsltUrl}><img src={rslt} /></a><br />
+                <a href={bregUrl}><img src={breg} alt="BikeReg"     /></a>&nbsp;
+                <a href={googUrl}><img src={goog} alt="Google Maps" /></a>&nbsp;
+                <a href={wazeUrl}><img src={waze} alt="Waze"        /></a>&nbsp;
+                <a href={rsltUrl}><img src={rslt} alt="CrossResults"/></a><br />
                 <br />
                 {this.props.toGo}      
             </div>
