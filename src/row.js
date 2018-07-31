@@ -1,6 +1,6 @@
 import React, { Component }             from 'react'            ;
 import {getAllWeather}                  from './api'            ;
-import {PreLabels, PreDaily, RaceDaily} from './daily'           ;
+import {PreLabels, PreDaily, RaceDaily} from './daily'          ;
 import {HourlyText}                     from './hourlyText'     ;
 import {HourlyGraph}                    from './hourlyGraph'    ;
 import breg                             from './breg16.png'     ;
@@ -75,37 +75,21 @@ export class Row extends Component {
             const opacity   =   ( ( today - raceDay ) > ( 1 * 86400000 ) ) ? "past" : ""                                           ;
 
             const diffDays  =   Math.ceil( ( raceDay - today ) / 86400000 )
-            const toGo      =   ( diffDays < -729 )
-                                    ? Math.floor( diffDays / -365 ) + " years ago"  
-                                    : ( diffDays < -364 )
-                                        ? "1 year ago" 
-                                        : ( diffDays < -60 )
-                                            ? Math.floor( diffDays / -30.4 ) + " months ago" 
-                                            : ( diffDays < -34)
-                                                ? "1 month ago" 
-                                                : ( diffDays < -13 )
-                                                    ? Math.floor( diffDays / -7 ) + " weeks ago" 
-                                                    : ( diffDays < -6 )
-                                                        ? "1 week ago" 
-                                                        : ( diffDays < -1 )
-                                                            ? diffDays * -1 + " days ago" 
-                                                            : ( diffDays === -1 )
-                                                                ? "Yesterday" 
-                                                                : ( diffDays === 0 )
-                                                                    ? "Today!" 
-                                                                    : ( diffDays === 1 )
-                                                                        ? "Tomorrow!" 
-                                                                        : ( diffDays < 15 )
-                                                                            ? diffDays + " days" 
-                                                                            : ( diffDays < 203 )
-                                                                                ? Math.floor( diffDays / 7 ) + " weeks" 
-                                                                                : ( diffDays < 365 )
-                                                                                    ? Math.floor( diffDays / 30.4 ) + " months" 
-                                                                                    : (diffDays < 729 )
-                                                                                        ? "1 year" 
-                                                                                        : Math.floor( diffDays / 365 ) + " years" 
-
-            console.log(diffDays)
+            const toGo      =     ( diffDays <   -729 ) ? Math.floor( diffDays / -365 ) +   " years ago"  
+                                : ( diffDays <   -364 ) ?                                  "1 year ago" 
+                                : ( diffDays <   -60  ) ? Math.floor( diffDays / -30.4 ) +  " months ago" 
+                                : ( diffDays <   -34  ) ?                                  "1 month ago" 
+                                : ( diffDays <   -13  ) ? Math.floor( diffDays / -7 ) +     " weeks ago" 
+                                : ( diffDays <   -6   ) ?                                  "1 week ago" 
+                                : ( diffDays <   -1   ) ? diffDays * -1 +                   " days ago" 
+                                : ( diffDays === -1   ) ?                                    "Yesterday" 
+                                : ( diffDays === 0    ) ?                                    "Today!" 
+                                : ( diffDays === 1    ) ?                                    "Tomorrow!" 
+                                : ( diffDays <   15   ) ? diffDays +                        " days" 
+                                : ( diffDays <   203  ) ? Math.floor( diffDays / 7 ) +      " weeks" 
+                                : ( diffDays <   365  ) ? Math.floor( diffDays / 30.4 ) +   " months" 
+                                : ( diffDays <   729  ) ?                                  "1 year" 
+                                :                         Math.floor( diffDays / 365 ) +    " years" 
 
             return (
                 <div className={"flexBin " + opacity}> 

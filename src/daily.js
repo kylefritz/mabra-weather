@@ -1,8 +1,6 @@
 import React, { Component } from 'react'    ;
 import {emojiKey}           from './App'    ;
 
-
-
 export class PreLabels extends Component {
     render() {
         return (
@@ -83,7 +81,7 @@ export class RaceDaily extends Component {
                 Wind            <span className="right">{windFixed}mph                                                      </span><br />
                 Cloud Cover     <span className="right">{cloudFixed}%                                                       </span><br />
                 Precip Chance   <span className="right">{chanceFixed}%                                                      </span><br />
-                Precip Amount   <span className="right">{precipFixed}in                                                      </span><br />
+                Precip Amount   <span className="right">{precipFixed}in                                                     </span><br />
                 Sunrise Sunset  <span className="right">{sunriseHour}:{sunriseMinFixed}a - {sunsetHour}:{sunsetMinFixed}p   </span><br />
                 <br />
             </div>

@@ -24,11 +24,9 @@ export class HourlyGraph extends Component {
 
     nearestXHandler(value, {index}) {
 
-        let time    =   ( index === 0  ) 
-                        ? ( "12a"      ) 
-                        : ( index < 13 )
-                            ? (   index        + "a" )      
-                            : ( ( index - 12 ) + "p" ) ;
+        let time    =     ( index === 0  ) ?   ( "12a"      ) 
+                        : ( index < 13 )   ?   ( index        + "a" )      
+                                           : ( ( index - 12 ) + "p" ) ;
 
         const day = this.props.weather[3]
 
@@ -81,28 +79,28 @@ export class HourlyGraph extends Component {
             hours.map( (hour, i)    => chanceData.push(     {   x: i   ,  y: ( hourly[i].precipProbability * 100  ).toFixed(0)  } ) )
             hours.map( (hour, i)    => precipMmData.push(   {   x: i   ,  y: ( hourly[i].precipIntensity * 25.4  ).toFixed(1)   } ) )
 
-            let tempBottom      =   Math.min.apply(Math, tempData.map(function(z) { return z.y; })) - 5   ;
-            let tempTop         =   Math.max.apply(Math, tempData.map(function(z) { return z.y; })) + 5   ;
-
-            const sunriseHour   =   ( new Date ( this.props.weather[3].daily.data[0].sunriseTime * 1000 ) ).getHours()      ;
-            const sunsetHour    =   ( new Date ( this.props.weather[3].daily.data[0].sunsetTime  * 1000 ) ).getHours()      ;    
-            const sunriseMin    =   ( new Date ( this.props.weather[3].daily.data[0].sunriseTime * 1000 ) ).getMinutes()    ;
-            const sunsetMin     =   ( new Date ( this.props.weather[3].daily.data[0].sunsetTime  * 1000 ) ).getMinutes()    ;
-
-            const risePer       =   ( 60 * sunriseHour + sunriseMin ) / ( 60 * 24 ) ;
-            const setPer        =   ( 60 * sunsetHour  + sunsetMin  ) / ( 60 * 24 ) ;
-
-            const sunChangetime =   0.2 / 24    ;
-
-            const preRisePer    =   risePer - sunChangetime     ;
-            const postRisePer   =   risePer + sunChangetime     ;
-            const preSetPer     =   setPer - sunChangetime      ;
-            const postSetPer    =   setPer + sunChangetime      ;
-
-            const postRiseNet   =   postRisePer -   preRisePer  ;
-            const preSetNet     =   preSetPer   -   postRisePer ;
-            const postSetNet    =   postSetPer  -   preSetPer   ;
-            const remainderNet  =   1           -   postSetPer  ;
+            let tempBottom          =   Math.min.apply(Math, tempData.map(function(z) { return z.y; })) - 5   ;
+            let tempTop             =   Math.max.apply(Math, tempData.map(function(z) { return z.y; })) + 5   ;
+        
+            const sunriseHour       =   ( new Date ( this.props.weather[3].daily.data[0].sunriseTime * 1000 ) ).getHours()      ;
+            const sunsetHour        =   ( new Date ( this.props.weather[3].daily.data[0].sunsetTime  * 1000 ) ).getHours()      ;    
+            const sunriseMin        =   ( new Date ( this.props.weather[3].daily.data[0].sunriseTime * 1000 ) ).getMinutes()    ;
+            const sunsetMin         =   ( new Date ( this.props.weather[3].daily.data[0].sunsetTime  * 1000 ) ).getMinutes()    ;
+        
+            const risePer           =   ( 60 * sunriseHour + sunriseMin ) / ( 60 * 24 ) ;
+            const setPer            =   ( 60 * sunsetHour  + sunsetMin  ) / ( 60 * 24 ) ;
+        
+            const sunChangetime     =   0.2 / 24    ;
+        
+            const preRisePer        =   risePer - sunChangetime     ;
+            const postRisePer       =   risePer + sunChangetime     ;
+            const preSetPer         =   setPer - sunChangetime      ;
+            const postSetPer        =   setPer + sunChangetime      ;
+        
+            const postRiseNet       =   postRisePer -   preRisePer  ;
+            const preSetNet         =   preSetPer   -   postRisePer ;
+            const postSetNet        =   postSetPer  -   preSetPer   ;
+            const remainderNet      =   1           -   postSetPer  ;
 
         return (
 
