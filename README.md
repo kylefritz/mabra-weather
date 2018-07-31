@@ -1,3 +1,14 @@
+# MABRA Weather
+
+Displays the Mid-Atlantic cyclocross schedule and daily and hourly weather conditions up to and on race days in text and visualized. Links to BikeReg, Google Maps, Waze, and CrossResults provided for each race. Past events grayed out.
+
+Built using React and React Vis
+
+Hosted at https://adrianalday.github.io/mabra-weather/
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
