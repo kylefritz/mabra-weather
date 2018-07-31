@@ -1,0 +1,87 @@
+body {
+  margin          : 0                     ;
+  padding         : 0                     ;
+  font-family     : Futura                ;
+}
+
+.flexBin {
+  display         : flex                  ;
+  flex-flow       : row nowrap            ;
+  justify-content : flex-start            ;
+  align-items     : flex-start            ;
+  align-content   : flex-start            ;
+}
+
+.topBar {
+  background-color  : #000000           ; 
+  position          : -webkit-sticky      ;
+  position          : sticky              ;
+  top               : 0px                 ;
+  z-index           : 2                   ;
+  width             : 2445px              ;
+  padding-bottom    : 6px                 ;
+}
+
+.fillHeadColor {    
+  background-color  : #000000           ; 
+  padding-bottom    : 10px                ; 
+  color             : #ffffff           ; 
+}
+
+.sideBar { 
+  background-color  : #FFFFFF           ;   
+  height            : 530px               ;
+  position          : -webkit-sticky      ;
+  position          : sticky              ;
+  left              : 0px                 ;
+  z-index           : 1                   ;
+}
+
+.border {
+  border-right      : 1px solid #d9d9d9 ;
+}
+
+.corner {
+  position          : fixed               ;
+  top               : 0                   ;
+  left              : 0                   ;
+  width             : 171px               ;
+  height            : 30px                ;
+  background-color  : #000000           ; 
+}
+
+.event      { padding : 6px 5px 0px  10px ; flex  : 0 0 150px  ;  }
+.preLabels  { padding : 6px 0px  0px  10px ; flex  : 0 0 110px  ;  }
+.preDays    { padding : 6px 10px 0px  0px  ; flex  : 0 0 140px  ;  }
+.raceDay    { padding : 6px 10px 0px  10px ; flex  : 0 0 240px  ;  }
+.hourly     { padding : 6px 5px  0px  5px  ; flex  : 0 0 50px   ;  }
+.footer     { padding : 6px 0px  10px 5px  ; width : 2420px     ;  } /* (170+4*195+25*60-80) */
+
+.summary  { position  : relative  ; height  : 90px      ;             }
+.bottom   { position  : absolute  ; bottom  : 0         ;             }
+.outer    { position  : relative  ; top     : 250       ; left  : 0 ; }
+.stack    { position  : absolute  ; top     : 0         ; left  : 0 ; }
+
+.right { float : right ; }
+
+.graphSpacer { height : 255px ; width : 1400px ;   z-index           : -1  ;}
+
+.highlight  { color   : #F07591 ; }
+.feel       { color   : #FF7420 ; }
+.temp       { color   : #F71A2B ; }
+.wind       { color   : #AA4A92 ; }
+.cloud      { color   : #C0C5C4 ; }
+.chance     { color   : #3358b5 ; }
+.amount     { color   : #B4DFE4 ; }
+.sun        { color   : #fe9b78 ; }
+a:link      { color   : #000000 ; }
+a:visited   { color   : #000000 ; }
+a:hover     { color   : #F07591 ; }
+a:active    { color   : #F07591 ; }
+
+.past       { opacity : 0.33      ; }
+
+
+
+
+
