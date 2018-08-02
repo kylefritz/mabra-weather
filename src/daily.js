@@ -56,15 +56,15 @@ export class RaceDaily extends Component {
 
         const icon              =   emojiKey[daily.icon]                                            ;
         const summary           =   daily.summary                                                   ;
-        const tempLowFixed      =   daily.temperatureLow.toFixed(0)                                 ;
+        const tempLowFixed = daily.temperatureLow.toFixed(0);// create component for temp
         const tempHighFixed     =   daily.temperatureHigh.toFixed(0)                                ;
         const feelLowFixed      =   daily.apparentTemperatureLow.toFixed(0)                         ;
         const feelHighFixed     =   daily.apparentTemperatureHigh.toFixed(0)                        ;
-        const windFixed         =   daily.windSpeed.toFixed(0)                                      ;
-        const cloudFixed        =   ( daily.cloudCover        * 100 ).toFixed(0)                    ;
+        const windFixed         =   daily.windSpeed.toFixed(0)                                      ;//create componet windspeed
+        const cloudFixed        =   ( daily.cloudCover        * 100 ).toFixed(0)                    ;// create component for % chance
         const chanceFixed       =   ( daily.precipProbability * 100 ).toFixed(0)                    ;
         const precipFixed       =   ( daily.precipIntensity   * 24  ).toFixed(2)                    ;
-        const sunriseHour       =   ( new Date ( daily.sunriseTime * 1000 ) ).getHours()            ;
+        const sunriseHour = (new Date(daily.sunriseTime * 1000)).getHours();//use moment.js to format time
         const sunriseMin        =   ( new Date ( daily.sunriseTime * 1000 ) ).getMinutes()          ;
         const sunriseMinFixed   =   sunriseMin < 10 ? "0" + sunriseMin : sunriseMin                 ;
         const sunsetHour        =   ( new Date ( daily.sunsetTime  * 1000 ) ).getHours() - 12       ;

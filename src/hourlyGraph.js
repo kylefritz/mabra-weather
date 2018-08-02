@@ -69,7 +69,7 @@ export class HourlyGraph extends Component {
 
     render() {
 
-            let feelData            =   []  ;
+        const feelData = hours.map((hour, i) => ({ x: i, y: hourly[i].apparentTemperature.toFixed(0) }));
             let tempData            =   []  ;
             let windData            =   []  ;
             let cloudData           =   []  ;
@@ -85,16 +85,19 @@ export class HourlyGraph extends Component {
             hours.map( (hour, i)    => chanceData.push(     {   x: i   ,  y: ( hourly[i].precipProbability * 100  ).toFixed(0)  } ) )
             hours.map( (hour, i)    => precipMmData.push(   {   x: i   ,  y: ( hourly[i].precipIntensity * 25.4  ).toFixed(1)   } ) )
 
-            let tempMinY            =   Math.min.apply(Math, tempData.map(function(q) { return q.y; })) ;
+        const tempMinY = _.min(_.map(tempData, 'y')) - 5; // get lodash.js use _.min([])
             let tempMaxY            =   Math.max.apply(Math, tempData.map(function(q) { return q.y; })) ;   
             let tempMinX            =   tempData.findIndex(q => q.y===tempMinY.toString());
             let tempMaxX            =   tempData.findIndex(q => q.y===tempMaxY.toString());
             let tempMinMax          =   [ { x: tempMinX , y: tempMinY } , 
                                           { x: tempMaxX , y: tempMaxY }   ]
 
+            // see how this is repeated? create a function that does this work
+            // and call it a bunch of times.
+            // return the minMax structure
             let feelMinY            =   Math.min.apply(Math, feelData.map(function(q) { return q.y; })) ;
             let feelMaxY            =   Math.max.apply(Math, feelData.map(function(q) { return q.y; })) ;   
-            let feelMinX            =   feelData.findIndex(q => q.y===feelMinY.toString());
+            let feelMinX            =   feelData.findIndex(q => q.y===feelMinY.toString()); //lodash
             let feelMaxX            =   feelData.findIndex(q => q.y===feelMaxY.toString());
             let feelMinMax          =   [ { x: feelMinX , y: feelMinY } , 
                                           { x: feelMaxX , y: feelMaxY }   ]
@@ -200,11 +203,15 @@ export class HourlyGraph extends Component {
                 </div>
                 <div>
                     <XYPlot height={25} width= {1440} margin={{left: 5, right: 5, top: 1, bottom: 1}} stackBy="x">
-                        <HorizontalBarSeries data={ [ { x: preRisePer   ,   y: 1 } ] } color="#1D1D5B" />
-                        <HorizontalBarSeries data={ [ { x: postRiseNet  ,   y: 1 } ] } color="#fe9b78" />
-                        <HorizontalBarSeries data={ [ { x: preSetNet    ,   y: 1 } ] } color="#BAD9E7" />
-                        <HorizontalBarSeries data={ [ { x: postSetNet   ,   y: 1 } ] } color="#fe9b78" />
-                        <HorizontalBarSeries data={ [ { x: remainderNet ,   y: 1 } ] } color="#1D1D5B" />
+                        {[
+                            [preRisePer, "#1D1D5B"],
+                            [postRiseNet, "#1D1D5B"],
+                            [preSetNet, "#fe9b78"],
+                            [postSetNet, "#BAD9E7"],
+                            [remainderNet, "#1D1D5B"],
+                        ].map(([x, color]) =>
+                            <HorizontalBarSeries data={[{ x, y: 1 }]} color={color} />
+                        )}
                     </XYPlot> 
                 </div>
                 <div className="legend">
