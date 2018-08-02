@@ -54,7 +54,15 @@ export class Row extends Component {
                 weather : flatResults ,
             } )
 
+            console.log("success!")
+
         } )
+
+        .catch(
+            this.setState({ 
+                loading : "failed"
+            } )
+        )
 
     }
     
@@ -70,61 +78,72 @@ export class Row extends Component {
 
         else {
 
-            const today     =   new Date(Date.now())
-            const raceDay   =   Date.parse( new Date ( this.state.weather[3].daily.data[0].time * 1000 ) )  ;
-            const opacity   =   ( ( today - raceDay ) > ( 1 * 86400000 ) ) ? "past" : ""                                           ;
+            if ( this.state.loading === "failed" ) {
+                return (
+                    <div className="event sideBar">
+                        <span role="img" aria-label="exclamation">❗</span>we were somewhere around barstow on the edge of the desert when the server began to overload...
+                    </div> 
+                )
+            }
 
-            const diffDays  =   Math.ceil( ( raceDay - today ) / 86400000 )
-            const toGo      =     ( diffDays <   -729 ) ? Math.floor( diffDays / -365 ) +   " years ago"  
-                                : ( diffDays <   -364 ) ?                                  "1 year ago" 
-                                : ( diffDays <   -60  ) ? Math.floor( diffDays / -30.4 ) +  " months ago" 
-                                : ( diffDays <   -34  ) ?                                  "1 month ago" 
-                                : ( diffDays <   -13  ) ? Math.floor( diffDays / -7 ) +     " weeks ago" 
-                                : ( diffDays <   -6   ) ?                                  "1 week ago" 
-                                : ( diffDays <   -1   ) ? diffDays * -1 +                   " days ago" 
-                                : ( diffDays === -1   ) ?                                    "Yesterday" 
-                                : ( diffDays === 0    ) ?                                    "Today!" 
-                                : ( diffDays === 1    ) ?                                    "Tomorrow!" 
-                                : ( diffDays <   15   ) ? diffDays +                        " days" 
-                                : ( diffDays <   203  ) ? Math.floor( diffDays / 7 ) +      " weeks" 
-                                : ( diffDays <   365  ) ? Math.floor( diffDays / 30.4 ) +   " months" 
-                                : ( diffDays <   729  ) ?                                  "1 year" 
-                                :                         Math.floor( diffDays / 365 ) +    " years" 
+            else {
 
-            return (
-                <div className={"flexBin " + opacity}> 
-                    <Event 
-                        name    =   {this.props.name}
-                        weather =   {this.state.weather} 
-                        lat     =   {this.props.lat}
-                        long    =   {this.props.long}
-                        toGo    =   {toGo}
-                    />
-                    <PreLabels />
-                    { predays.map( (day, i) =>
-                        <PreDaily  
-                            key     =   { i }
-                            {...day}
-                            weather =   {this.state.weather}
-                            index   =   { i }
+                const today     =   new Date(Date.now())
+                const raceDay   =   Date.parse( new Date ( this.state.weather[3].daily.data[0].time * 1000 ) )  ;
+                const opacity   =   ( ( today - raceDay ) > ( 1 * 86400000 ) ) ? "past" : ""                                           ;
+
+                const diffDays  =   Math.ceil( ( raceDay - today ) / 86400000 )
+                const toGo      =     ( diffDays <   -729 ) ? Math.floor( diffDays / -365 ) +   " years ago"  
+                                    : ( diffDays <   -364 ) ?                                  "1 year ago" 
+                                    : ( diffDays <   -60  ) ? Math.floor( diffDays / -30.4 ) +  " months ago" 
+                                    : ( diffDays <   -34  ) ?                                  "1 month ago" 
+                                    : ( diffDays <   -13  ) ? Math.floor( diffDays / -7 ) +     " weeks ago" 
+                                    : ( diffDays <   -6   ) ?                                  "1 week ago" 
+                                    : ( diffDays <   -1   ) ? diffDays * -1 +                   " days ago" 
+                                    : ( diffDays === -1   ) ?                                    "Yesterday" 
+                                    : ( diffDays === 0    ) ?                                    "Today!" 
+                                    : ( diffDays === 1    ) ?                                    "Tomorrow!" 
+                                    : ( diffDays <   15   ) ? diffDays +                        " days" 
+                                    : ( diffDays <   203  ) ? Math.floor( diffDays / 7 ) +      " weeks" 
+                                    : ( diffDays <   365  ) ? Math.floor( diffDays / 30.4 ) +   " months" 
+                                    : ( diffDays <   729  ) ?                                  "1 year" 
+                                    :                         Math.floor( diffDays / 365 ) +    " years" 
+
+                return (
+                    <div className={"flexBin " + opacity}> 
+                        <Event 
+                            name    =   {this.props.name}
+                            weather =   {this.state.weather} 
+                            lat     =   {this.props.lat}
+                            long    =   {this.props.long}
+                            toGo    =   {toGo}
                         />
-                    ) }
-                    <RaceDaily 
-                        weather =   {this.state.weather} 
-                    />
-                    <div>
-                        <div className="flexBin">
-                            <HourlyText   
+                        <PreLabels />
+                        { predays.map( (day, i) =>
+                            <PreDaily  
+                                key     =   { i }
+                                {...day}
+                                weather =   {this.state.weather}
+                                index   =   { i }
+                            />
+                        ) }
+                        <RaceDaily 
+                            weather =   {this.state.weather} 
+                        />
+                        <div>
+                            <div className="flexBin">
+                                <HourlyText   
+                                    weather =   {this.state.weather}    
+                                />
+                            </div>
+                            <HourlyGraph 
                                 weather =   {this.state.weather}    
                             />
                         </div>
-                        <HourlyGraph 
-                            weather =   {this.state.weather}    
-                        />
+                        
                     </div>
-                    
-                </div>
-            )
+                )
+            }
         }
     }
 }

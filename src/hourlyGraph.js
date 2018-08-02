@@ -1,6 +1,6 @@
 import React, { Component }                                         from 'react'        ;
 import {hours, emojiKey}                                            from './App'        ;
-import {XYPlot, VerticalBarSeries, LineSeries, HorizontalBarSeries} from 'react-vis'    ;
+import {XYPlot, VerticalBarSeries, LineSeries, HorizontalBarSeries, LabelSeries, MarkSeries} from 'react-vis'    ;
 import './vis.css' ;
 
 export class HourlyGraph extends Component {
@@ -17,6 +17,7 @@ export class HourlyGraph extends Component {
             displayChance   :   []                                                      ,
             displayAmount   :   []                                                      ,
             displayRise     :   []                                                      ,
+            displayLight    :   []                                                      ,
             displaySet      :   []                                                      ,
         };
         this.nearestXHandler    = this.nearestXHandler.bind(this)   ;
@@ -45,6 +46,10 @@ export class HourlyGraph extends Component {
         const sunsetMinFixed    =    sunsetMin  < 10 ? "0" + sunsetMin  : sunsetMin                                             ;
         let rise                =    sunriseHour     + ":" + sunriseMinFixed + "a"                                              ;
         let set                 =    sunsetHourFixed + ":" + sunsetMinFixed  + "p"                                              ;
+        const sunLight          =   ( 12 + sunsetHourFixed - sunriseHour ) * 60 + sunsetMin - sunriseMin                        ;
+        const lightHour         =   Math.floor( sunLight / 60 )                                                                 ;
+        const lightMin          =   sunLight - 60 * lightHour                                                                   ;
+        const light             =   lightHour + "h " + lightMin + "m"                                                           ;
 
         this.setState({ 
             displayIcon     : [icon]    ,
@@ -56,6 +61,7 @@ export class HourlyGraph extends Component {
             displayChance   : [chance]  ,
             displayAmount   : [amount]  ,
             displayRise     : [rise]    ,
+            displayLight    : [light]   ,
             displaySet      : [set]     ,
         });
 
@@ -79,9 +85,52 @@ export class HourlyGraph extends Component {
             hours.map( (hour, i)    => chanceData.push(     {   x: i   ,  y: ( hourly[i].precipProbability * 100  ).toFixed(0)  } ) )
             hours.map( (hour, i)    => precipMmData.push(   {   x: i   ,  y: ( hourly[i].precipIntensity * 25.4  ).toFixed(1)   } ) )
 
-            let tempBottom          =   Math.min.apply(Math, tempData.map(function(z) { return z.y; })) - 5   ;
-            let tempTop             =   Math.max.apply(Math, tempData.map(function(z) { return z.y; })) + 5   ;
-        
+            let tempMinY            =   Math.min.apply(Math, tempData.map(function(q) { return q.y; })) ;
+            let tempMaxY            =   Math.max.apply(Math, tempData.map(function(q) { return q.y; })) ;   
+            let tempMinX            =   tempData.findIndex(q => q.y===tempMinY.toString());
+            let tempMaxX            =   tempData.findIndex(q => q.y===tempMaxY.toString());
+            let tempMinMax          =   [ { x: tempMinX , y: tempMinY } , 
+                                          { x: tempMaxX , y: tempMaxY }   ]
+
+            let feelMinY            =   Math.min.apply(Math, feelData.map(function(q) { return q.y; })) ;
+            let feelMaxY            =   Math.max.apply(Math, feelData.map(function(q) { return q.y; })) ;   
+            let feelMinX            =   feelData.findIndex(q => q.y===feelMinY.toString());
+            let feelMaxX            =   feelData.findIndex(q => q.y===feelMaxY.toString());
+            let feelMinMax          =   [ { x: feelMinX , y: feelMinY } , 
+                                          { x: feelMaxX , y: feelMaxY }   ]
+
+            let windMinY            =   Math.min.apply(Math, windData.map(function(q) { return q.y; })) ;
+            let windMaxY            =   Math.max.apply(Math, windData.map(function(q) { return q.y; })) ;   
+            let windMinX            =   windData.findIndex(q => q.y===windMinY.toString());
+            let windMaxX            =   windData.findIndex(q => q.y===windMaxY.toString());
+            let windMinMax          =   [ { x: windMinX , y: windMinY } , 
+                                          { x: windMaxX , y: windMaxY }   ]
+
+            let cloudMinY            =   Math.min.apply(Math, cloudData.map(function(q) { return q.y; })) ;
+            let cloudMaxY            =   Math.max.apply(Math, cloudData.map(function(q) { return q.y; })) ;   
+            let cloudMinX            =   cloudData.findIndex(q => q.y===cloudMinY.toString());
+            let cloudMaxX            =   cloudData.findIndex(q => q.y===cloudMaxY.toString());
+            let cloudMinMax          =   [ { x: cloudMinX , y: cloudMinY } , 
+                                           { x: cloudMaxX , y: cloudMaxY }   ]
+
+            let chanceMinY            =   Math.min.apply(Math, chanceData.map(function(q) { return q.y; })) ;
+            let chanceMaxY            =   Math.max.apply(Math, chanceData.map(function(q) { return q.y; })) ;   
+            let chanceMinX            =   chanceData.findIndex(q => q.y===chanceMinY.toString());
+            let chanceMaxX            =   chanceData.findIndex(q => q.y===chanceMaxY.toString());
+            let chanceMinMax          =   [ { x: chanceMinX , y: chanceMinY } , 
+                                            { x: chanceMaxX , y: chanceMaxY }   ]
+
+            let precipMmMinY            =   Math.min.apply(Math, precipMmData.map(function(q) { return q.y; })) ;
+            let precipMmMaxY            =   Math.max.apply(Math, precipMmData.map(function(q) { return q.y; })) ;   
+            let precipMmMinX            =   precipMmData.findIndex(q => q.y===precipMmMinY.toString());
+            let precipMmMaxX            =   precipMmData.findIndex(q => q.y===precipMmMaxY.toString());
+            let precipMmMinMax          =   [ { x: precipMmMinX , y: precipMmMinY } , 
+                                            { x: precipMmMaxX , y: precipMmMaxY }   ]
+
+
+            let tempMinYDomain       =   tempMinY - 5;
+            let tempMaxYDomain       =   tempMaxY + 5;
+
             const sunriseHour       =   ( new Date ( this.props.weather[3].daily.data[0].sunriseTime * 1000 ) ).getHours()      ;
             const sunsetHour        =   ( new Date ( this.props.weather[3].daily.data[0].sunsetTime  * 1000 ) ).getHours()      ;    
             const sunriseMin        =   ( new Date ( this.props.weather[3].daily.data[0].sunriseTime * 1000 ) ).getMinutes()    ;
@@ -102,6 +151,11 @@ export class HourlyGraph extends Component {
             const postSetNet        =   postSetPer  -   preSetPer   ;
             const remainderNet      =   1           -   postSetPer  ;
 
+            
+
+
+
+
         return (
 
             <div>
@@ -109,32 +163,38 @@ export class HourlyGraph extends Component {
                     <div className="graphSpacer">{/* spacer */}</div>
                     <div className="stack">
                         <XYPlot height={250} width= {1440} margin={{left: 0, right: 0, top: 5, bottom: 1}}>
-                            <LineSeries         data={ [ { x:0   ,   y: 0 } ] } color="#000000" />
-                            <LineSeries         data={ [ { x:0   ,   y: 1 } ] } color="#000000" />
-                            <VerticalBarSeries  data={precipMmData}             color="#B4DFE4" />
+                            <LineSeries         data={ [ { x:0   ,   y: 0 } ] } color="#000000"                                 />
+                            <LineSeries         data={ [ { x:0   ,   y: 1 } ] } color="#000000"                                 />
+                            <VerticalBarSeries  data={precipMmData}             color="#B4DFE4"                                 />
+                            <MarkSeries         data={precipMmMinMax}           color="#B4DFE4" size="5"    stroke="#FFFFFF"    />          
                         </XYPlot>
                     </div>
                     <div className="stack">
                         <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}>
-                            <LineSeries data={ [ { x:0   ,   y: 0  } ] }    color="#000000" />
-                            <LineSeries data={ [ { x:0   ,   y: 20 } ] }    color="#000000" />
-                            <LineSeries data={windData}                     color="#AA4A92" />
+                            <LineSeries data={ [ { x:0   ,   y: 0  } ] }    color="#000000"                                 />
+                            <LineSeries data={ [ { x:0   ,   y: 20 } ] }    color="#000000"                                 />
+                            <LineSeries data={windData}                     color="#AA4A92"                                 />
+                            <MarkSeries data={windMinMax}                   color="#AA4A92" size="5"    stroke="#FFFFFF"    />          
                         </XYPlot>
                     </div>
                     <div className="stack">
                         <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}>
-                            <LineSeries data={ [ { x:0   ,   y: 0   } ] }   color="#000000" />
-                            <LineSeries data={ [ { x:0   ,   y: 100 } ] }   color="#000000" />
-                            <LineSeries data={cloudData}                    color="#C0C5C4" />
-                            <LineSeries data={chanceData}                   color="#3358b5" />
+                            <LineSeries data={ [ { x:0   ,   y: 0   } ] }   color="#000000"                                 />
+                            <LineSeries data={ [ { x:0   ,   y: 100 } ] }   color="#000000"                                 />
+                            <LineSeries data={cloudData}                    color="#C0C5C4"                                 />
+                            <LineSeries data={chanceData}                   color="#3358b5"                                 />
+                            <MarkSeries data={cloudMinMax}                  color="#C0C5C4" size="5"    stroke="#FFFFFF"    />   
+                            <MarkSeries data={chanceMinMax}                 color="#3358b5" size="5"    stroke="#FFFFFF"    />          
                         </XYPlot>
                     </div>
                     <div className="stack">
                         <XYPlot height={250} width= {1440} margin={{left: 30, right: 30, top: 5, bottom: 1}}>
-                            <LineSeries data={ [ { x:0   ,   y: tempBottom } ] }    color="#000000"                                     />
-                            <LineSeries data={ [ { x:0   ,   y: tempTop    } ] }    color="#000000"                                     />
-                            <LineSeries data={feelData}                             color="#FF7420"                                     />
-                            <LineSeries data={tempData}                             color="#F71A2B" onNearestX={this.nearestXHandler}   />
+                            <LineSeries     data={ [ { x:0   ,   y: tempMinYDomain } ] }    color="#000000"                                     />
+                            <LineSeries     data={ [ { x:0   ,   y: tempMaxYDomain } ] }    color="#000000"                                     />
+                            <LineSeries     data={feelData}                                 color="#FF7420"                                     />
+                            <LineSeries     data={tempData}                                 color="#F71A2B" onNearestX={this.nearestXHandler}   />
+                            <MarkSeries     data={feelMinMax}                               color="#FF7420" size="5"    stroke="#FFFFFF"        />          
+                            <MarkSeries     data={tempMinMax}                               color="#F71A2B" size="5"    stroke="#FFFFFF"        />
                         </XYPlot>
                     </div>
                 </div>
@@ -150,14 +210,15 @@ export class HourlyGraph extends Component {
                 <div className="legend">
                     <span className="displayTime"           >{this.state.displayTime}</                 span>
                     <span className="displayIcon"           >{this.state.displayIcon}</                 span>
-                    <span className="displayFeel feel"      >Feel {this.state.displayFeel}</            span>
-                    <span className="displayTemp temp"      >Temp {this.state.displayTemp}</            span>
-                    <span className="displayWind wind"      >Wind {this.state.displayWind}</            span>
-                    <span className="displayCloud cloud"    >Cloud Cover {this.state.displayCloud}</    span>
-                    <span className="displayChance chance"  >Precip Chance {this.state.displayChance}</ span>
-                    <span className="displayAmount amount"  >Precip Amount {this.state.displayAmount}</ span>
-                    <span className="displayRise sun"       >Sunrise {this.state.displayRise}</         span>
-                    <span className="displaySet sun"        >Sunset {this.state.displaySet}</           span>
+                    <span className="displayFeel    feel"   >Feel {this.state.displayFeel}</            span>
+                    <span className="displayTemp    temp"   >Temp {this.state.displayTemp}</            span>
+                    <span className="displayWind    wind"   >Wind {this.state.displayWind}</            span>
+                    <span className="displayCloud   cloud"  >Cloud Cover {this.state.displayCloud}</    span>
+                    <span className="displayChance  chance" >Precip Chance {this.state.displayChance}</ span>
+                    <span className="displayAmount  amount" >Precip Amount {this.state.displayAmount}</ span>
+                    <span className="displayRise    sun"    >Sunrise {this.state.displayRise}</         span>
+                    <span className="displayLight   light"  >Daylight {this.state.displayLight}</       span>
+                    <span className="displaySet     sun"    >Sunset {this.state.displaySet}</           span>
                 </div>
             </div>
         );

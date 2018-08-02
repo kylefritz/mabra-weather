@@ -1,5 +1,7 @@
 const proxy = "https://cors-anywhere.herokuapp.com/";
+// const proxy = "";
 const api   = "https://api.darksky.net/forecast/";
+
 const key   = "3d3213bf0f61d6bac9aa102916be3b7e";
 const base  = proxy + api + key + "/";
 

@@ -72,6 +72,7 @@ body {
 .chance     { color   : #3358b5 ; }
 .amount     { color   : #B4DFE4 ; }
 .sun        { color   : #fe9b78 ; }
+.light      { color   : #BAD9E7 ; }
 a:link      { color   : #000000 ; }
 a:visited   { color   : #000000 ; }
 a:hover     { color   : #F07591 ; }
@@ -88,8 +89,9 @@ a:active    { color   : #F07591 ; }
 .displayCloud   { display : inline-block  ; width : 160px ; }
 .displayChance  { display : inline-block  ; width : 170px ; }
 .displayAmount  { display : inline-block  ; width : 190px ; }
-.displayRise    { display : inline-block  ; width : 125px ; }
-.displaySet     { display : inline-block  ; width : 125px ; }
+.displayRise    { display : inline-block  ; width : 130px ; }
+.displayLight   { display : inline-block  ; width : 140px ; }
+.displaySet     { display : inline-block  ; width : 130px ; }
 
 .graphSpacer    { height : 255px ; width : 1400px ; z-index : -1 ; }
 

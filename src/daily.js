@@ -52,24 +52,27 @@ export class RaceDaily extends Component {
 
     render() {
 
-        const daily             =   this.props.weather[3].daily.data[0]                         ;
+        const daily             =   this.props.weather[3].daily.data[0]                             ;
 
-        const icon              =   emojiKey[daily.icon]                                        ;
-        const summary           =   daily.summary                                               ;
-        const tempLowFixed      =   daily.temperatureLow.toFixed(0)                             ;
-        const tempHighFixed     =   daily.temperatureHigh.toFixed(0)                            ;
-        const feelLowFixed      =   daily.apparentTemperatureLow.toFixed(0)                     ;
-        const feelHighFixed     =   daily.apparentTemperatureHigh.toFixed(0)                    ;
-        const windFixed         =   daily.windSpeed.toFixed(0)                                  ;
-        const cloudFixed        =   ( daily.cloudCover        * 100 ).toFixed(0)                ;
-        const chanceFixed       =   ( daily.precipProbability * 100 ).toFixed(0)                ;
-        const precipFixed       =   ( daily.precipIntensity   * 24  ).toFixed(2)                ;
-        const sunriseHour       =   ( new Date ( daily.sunriseTime * 1000 ) ).getHours()        ;
-        const sunriseMin        =   ( new Date ( daily.sunriseTime * 1000 ) ).getMinutes()      ;
-        const sunriseMinFixed   =   sunriseMin < 10 ? "0" + sunriseMin : sunriseMin             ;
-        const sunsetHour        =   ( new Date ( daily.sunsetTime  * 1000 ) ).getHours() - 12   ;
-        const sunsetMin         =   ( new Date ( daily.sunsetTime  * 1000 ) ).getMinutes()      ;
-        const sunsetMinFixed    =   sunsetMin  < 10 ? "0" + sunsetMin  : sunsetMin              ;
+        const icon              =   emojiKey[daily.icon]                                            ;
+        const summary           =   daily.summary                                                   ;
+        const tempLowFixed      =   daily.temperatureLow.toFixed(0)                                 ;
+        const tempHighFixed     =   daily.temperatureHigh.toFixed(0)                                ;
+        const feelLowFixed      =   daily.apparentTemperatureLow.toFixed(0)                         ;
+        const feelHighFixed     =   daily.apparentTemperatureHigh.toFixed(0)                        ;
+        const windFixed         =   daily.windSpeed.toFixed(0)                                      ;
+        const cloudFixed        =   ( daily.cloudCover        * 100 ).toFixed(0)                    ;
+        const chanceFixed       =   ( daily.precipProbability * 100 ).toFixed(0)                    ;
+        const precipFixed       =   ( daily.precipIntensity   * 24  ).toFixed(2)                    ;
+        const sunriseHour       =   ( new Date ( daily.sunriseTime * 1000 ) ).getHours()            ;
+        const sunriseMin        =   ( new Date ( daily.sunriseTime * 1000 ) ).getMinutes()          ;
+        const sunriseMinFixed   =   sunriseMin < 10 ? "0" + sunriseMin : sunriseMin                 ;
+        const sunsetHour        =   ( new Date ( daily.sunsetTime  * 1000 ) ).getHours() - 12       ;
+        const sunsetMin         =   ( new Date ( daily.sunsetTime  * 1000 ) ).getMinutes()          ;
+        const sunsetMinFixed    =   sunsetMin  < 10 ? "0" + sunsetMin  : sunsetMin                  ;
+        // const sunLight          =   ( 12 + sunsetHour - sunriseHour ) * 60 + sunsetMin - sunriseMin ;
+        // const lightHour         =   Math.floor(sunLight/60)
+        // const lightMin          =   sunLight - 60 * lightHour            
                         
         return (
             <div className="raceDay highlight">
@@ -82,8 +85,7 @@ export class RaceDaily extends Component {
                 Cloud Cover     <span className="right">{cloudFixed}%                                                       </span><br />
                 Precip Chance   <span className="right">{chanceFixed}%                                                      </span><br />
                 Precip Amount   <span className="right">{precipFixed}in                                                     </span><br />
-                Sunrise Sunset  <span className="right">{sunriseHour}:{sunriseMinFixed}a - {sunsetHour}:{sunsetMinFixed}p   </span><br />
-                <br />
+                Sunrise Sunset  <span className="right">{sunriseHour}:{sunriseMinFixed}a - {sunsetHour}:{sunsetMinFixed}p   </span>     
             </div>
         )
     }

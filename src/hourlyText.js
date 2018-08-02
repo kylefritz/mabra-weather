@@ -37,21 +37,19 @@ class HourText extends Component {
         const chanceFixed   =   ( hour.precipProbability * 100  ).toFixed(0)    ;
         const precipMmFixed =   ( hour.precipIntensity   * 25.4 ).toFixed(1)    ;
            
-        const sunriseHour   =   ( new Date ( this.props.fullDay.daily.data[0].sunriseTime * 1000 ) ).getHours()   ;
-        const sunsetHour    =   ( new Date ( this.props.fullDay.daily.data[0].sunsetTime  * 1000 ) ).getHours()   ;
-        const sunsetHourFixed        =   ( new Date ( this.props.fullDay.daily.data[0].sunsetTime  * 1000 ) ).getHours() - 12   ;
-
-        const sunriseMin        =   ( new Date ( this.props.fullDay.daily.data[0].sunriseTime * 1000 ) ).getMinutes()      ;
-        const sunriseMinFixed   =   sunriseMin < 10 ? "0" + sunriseMin : sunriseMin             ;
-        const sunsetMin         =   ( new Date ( this.props.fullDay.daily.data[0].sunsetTime  * 1000 ) ).getMinutes()      ;
-        const sunsetMinFixed    =   sunsetMin  < 10 ? "0" + sunsetMin  : sunsetMin              ;
-
-        const sunIcon       =   (this.props.num === sunriseHour) 
-                                    ? (sunriseHour+":"+sunriseMinFixed+"a")
-                                    :   (this.props.num === sunsetHour)
-                                        ? (sunsetHourFixed+":"+sunsetMinFixed+"p")
-                                        : "";
-
+        const sunriseHour       =   ( new Date ( this.props.fullDay.daily.data[0].sunriseTime * 1000 ) ).getHours()                         ;
+        const sunsetHour        =   ( new Date ( this.props.fullDay.daily.data[0].sunsetTime  * 1000 ) ).getHours()                         ;
+        const sunsetHourFixed   =   ( new Date ( this.props.fullDay.daily.data[0].sunsetTime  * 1000 ) ).getHours() - 12                    ;
+        const sunriseMin        =   ( new Date ( this.props.fullDay.daily.data[0].sunriseTime * 1000 ) ).getMinutes()                       ;
+        const sunsetMin         =   ( new Date ( this.props.fullDay.daily.data[0].sunsetTime  * 1000 ) ).getMinutes()                       ;
+        const sunriseMinFixed   =   sunriseMin < 10 ? "0" + sunriseMin : sunriseMin                                                         ;
+        const sunsetMinFixed    =   sunsetMin  < 10 ? "0" + sunsetMin  : sunsetMin                                                          ;
+        const sunLight          =   ( sunsetHour - sunriseHour ) * 60 + sunsetMin - sunriseMin                                              ;
+        const lightHour         =   Math.floor( sunLight / 60 )                                                                             ;
+        const sun               =     ( this.props.num ===   sunriseHour )       ? ( sunriseHour     + ":" + sunriseMinFixed + "a" )
+                                    : ( this.props.num ===   sunsetHour  )       ? ( sunsetHourFixed + ":" + sunsetMinFixed  + "p" ) : ""   ;
+        const light             =     ( this.props.num === ( sunriseHour + 1 ) ) ? ( lightHour + "h →" )                             : ""   ;
+        
         return (
 
             <div>
@@ -67,7 +65,7 @@ class HourText extends Component {
                     <span className="cloud">{cloudFixed}%</span><br />
                     <span className="chance">{chanceFixed}%</span><br />
                     <span className="amount">{precipMmFixed}mm</span><br />
-                    <span className="sun">{sunIcon}</span><br />
+                    <span className="sun">{sun}</span><span className="light">{light}</span>
                 </div>
             </div>
         )
